@@ -30,7 +30,7 @@ const getIpAddress = () => {
 
 const instance = {
   instance: {
-    instanceId: seat - service - 1,
+    instanceId: seat-service-1,
     hostName: getHostname(),
     app: SEAT_SERVICE,
     ipAddr: getIpAddress(),
