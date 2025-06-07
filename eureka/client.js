@@ -4,7 +4,7 @@ const Eureka = require("eureka-js-client").Eureka;
 
 const { PORT, EUREKA_HOST } = process.env;
 const APP_NAME = "SEAT_SERVICE";
-// const INSTANCE_ID = "seat-service-8084";
+
 
 // Get the actual hostname/IP for containerized environments
 const getHostname = () => {
@@ -35,7 +35,7 @@ const client = new Eureka({
     app: APP_NAME,
     hostName: getHostname(),
     ipAddr: getIpAddress(),
-    port: PORT,
+    port: { $: parseInt(PORT), "@enabled": "true" },
     vipAddress: APP_NAME,
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
