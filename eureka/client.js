@@ -5,7 +5,6 @@ const Eureka = require("eureka-js-client").Eureka;
 const { PORT, EUREKA_HOST } = process.env;
 const APP_NAME = "SEAT_SERVICE";
 
-
 // Get the actual hostname/IP for containerized environments
 const getHostname = () => {
   // In Docker, you might want to use the container's IP or hostname
@@ -46,6 +45,8 @@ const client = new Eureka({
     host: EUREKA_HOST,
     port: 8761,
     servicePath: "/eureka/apps/",
+    maxRetries: 50, // total attempts (default 0 = no retry)
+    requestRetryDelay: 5000,
   },
 });
 
