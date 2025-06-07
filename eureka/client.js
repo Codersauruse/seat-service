@@ -30,13 +30,13 @@ const getIpAddress = () => {
 
 const instance = {
   instance: {
-    instanceId: seat-service-1,
+    instanceId: "seat-service-8084",
     hostName: getHostname(),
-    app: SEAT_SERVICE,
+    app: "SEAT_SERVICE",
     ipAddr: getIpAddress(),
     status: "UP",
     port: { $: parseInt(PORT), "@enabled": true },
-    vipAddress: APP_NAME.toLowerCase(),
+    vipAddress: "seat-service",
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       name: "MyOwn",
