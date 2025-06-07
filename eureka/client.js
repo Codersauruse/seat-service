@@ -3,6 +3,7 @@ const axios = require("axios");
 require("dotenv").config();
 
 const { PORT, EUREKA_HOST } = process.env;
+const APP_NAME = "seat-service";
 
 // Get the actual hostname/IP for containerized environments
 const getHostname = () => {
@@ -36,7 +37,7 @@ const instance = {
     ipAddr: getIpAddress(),
     status: "UP",
     port: { $: parseInt(PORT), "@enabled": true },
-    vipAddress: "seat-service",
+    vipAddress: APP_NAME,
     dataCenterInfo: {
       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
       name: "MyOwn",
