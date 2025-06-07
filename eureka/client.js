@@ -3,7 +3,7 @@ const axios = require("axios");
 require("dotenv").config();
 
 const { PORT, EUREKA_HOST } = process.env;
-const APP_NAME = "seat-service";
+const APP_NAME = "SEAT_SERVICE";
 const INSTANCE_ID = "seat-service-8084";
 
 // Get the actual hostname/IP for containerized environments
