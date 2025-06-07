@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const { PORT, EUREKA_HOST } = process.env;
 const APP_NAME = "seat-service";
+const INSTANCE_ID = "seat-service-8084";
 
 // Get the actual hostname/IP for containerized environments
 const getHostname = () => {
@@ -31,7 +32,7 @@ const getIpAddress = () => {
 
 const instance = {
   instance: {
-    instanceId: "seat-service-8084",
+    instanceId: INSTANCE_ID,
     hostName: getHostname(),
     app: "SEAT_SERVICE",
     ipAddr: getIpAddress(),
