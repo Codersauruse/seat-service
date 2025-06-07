@@ -27,3 +27,6 @@ jobs:
         build-args: |
           PORT=${{ secrets.PORT }}
           MONGODB_URI=${{ secrets.MONGODB_URI }}
+          APP_NAME=${{ secrets.APP_NAME }}
+          INSTANCE_ID=${{ secrets.INSTANCE_ID }}
+          EUREKA_HOST=${{ secrets.EUREKA_HOST }}

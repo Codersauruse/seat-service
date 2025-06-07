@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/mongodb");
 const seatRouter = require("./route/seatRoute");
+const startEureka = require("./eureka/client");
 
 dotenv.config();
 const app = express();
@@ -17,8 +18,9 @@ app.use(cors());
 
 //api endpoints
 
-app.use("/api/seats",seatRouter)
+app.use("/api/seats", seatRouter);
 
 app.listen(port, () => {
   console.log(`heelooo ${port}`);
+  startEureka();
 });
