@@ -5,7 +5,8 @@ const seatSchema = new mongoose.Schema({
   busId: { type: String, required: true },
   bookingId: { type: Number, required: true },
   userId: { type: Number, required: true },
-  seatNumber: { type: [String], required: true },
+  reservedSeats: { type: [int], required: true },
+  numberOfseats:{type:Number},
   status: {
     type: String,
     enum: Object.values(SeatStatus),

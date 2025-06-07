@@ -50,23 +50,7 @@ const client = new Eureka({
   },
 });
 
-// const instance = {
-//   instance: {
-//     instanceId: INSTANCE_ID,
-//     hostName: getHostname(),
-//     app: "SEAT_SERVICE",
-//     ipAddr: getIpAddress(),
-//     status: "UP",
-//     port: { $: parseInt(PORT), "@enabled": true },
-//     vipAddress: APP_NAME,
-//     dataCenterInfo: {
-//       "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
-//       name: "MyOwn",
-//     },
-//     healthCheckUrl: `http://${getHostname()}:${PORT}/health`,
-//     statusPageUrl: `http://${getHostname()}:${PORT}/info`,
-//   },
-// };
+
 
 const register = async () => {
   try {
@@ -77,16 +61,7 @@ const register = async () => {
   }
 };
 
-// const heartbeat = () => {
-//   setInterval(async () => {
-//     try {
-//       await axios.put(`${EUREKA_HOST}/apps/${APP_NAME}/${INSTANCE_ID}`);
-//       console.log("Heartbeat sent");
-//     } catch (err) {
-//       console.error(" Heartbeat failed:", err.message);
-//     }
-//   }, 30000);
-// };
+
 
 const deregister = async () => {
   try {
