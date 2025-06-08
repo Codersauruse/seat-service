@@ -6,10 +6,10 @@ const seatSchema = new mongoose.Schema({
   bookingId: { type: Number, required: true },
   userId: { type: Number, required: true },
   reservedSeats: { type: [Number], required: true },
-  numberOfseats:{type:Number},
+  numberOfseats: { type: Number },
   status: {
     type: String,
-    enum: Object.values(SeatStatus),
+    enum: Object.values(Status),
     default: Status.AVAILABLE,
   },
   date: { type: Date, required: true },
