@@ -11,54 +11,54 @@ const connect = async () => {
     const rabbitMQPort = 5672;
     const rabbitMQUser = "guest";
     const rabbitMQPass = "guest";
-    // Connect to RabbitMQ - similar to .NET connection
-
     const connectionString = `amqp://${rabbitMQUser}:${rabbitMQPass}@${rabbitMQHost}:${rabbitMQPort}`;
 
     connection = await amqp.connect(connectionString);
-    channel = await this.connection.createChannel();
+    channel = await connection.createChannel();
 
-    await this.channel.assertQueue(SEAT_REQUEST_QUEUE, {
-      durable: true,
-    });
+    await channel.assertQueue(SEAT_REQUEST_QUEUE, { durable: true });
+    await channel.prefetch(1); // Ensures only one unacknowledged message at a time per consumer
 
-    console.log("Connected to RabbitMQ, waiting for seat booking messages...");
+    connection.on("error", (err) =>
+      console.error("AMQP connection error:", err)
+    );
+    connection.on("close", () => console.log("AMQP connection closed"));
+
+    console.log("✅ Connected to RabbitMQ and queue asserted.");
   } catch (error) {
-    console.error("Error connecting to RabbitMQ:", error);
+    console.error("❌ Error connecting to RabbitMQ:", error);
     throw error;
   }
 };
 
 const consume = async () => {
   try {
-    await channel.consume(SEAT_REQUEST_QUEUE, async (message) => {
-      if (message) {
+    await channel.consume(
+      SEAT_REQUEST_QUEUE,
+      async (message) => {
+        if (!message) return;
+
         try {
-          // Parse message - same as .NET consumer
           const content = message.content.toString();
           const bookingRequest = JSON.parse(content);
 
-          console.log("Seat booking request received:", {
+          console.log("📩 Seat booking request received:", {
             bookingId: bookingRequest.BookingId,
             seats: bookingRequest.SeatNumbers,
-            eventId: bookingRequest.EventId,
+            busId: bookingRequest.BusId,
           });
 
-          // Process the booking
           await processSeatBooking(bookingRequest);
-
-          // Acknowledge message - manual ack for reliability
           channel.ack(message);
-        } catch (error) {
-          console.error("Error processing seat booking:", error);
-
-          // Reject message and don't requeue if it's a parsing error
-          channel.nack(message, false, false);
+        } catch (err) {
+          console.error("❌ Error processing seat booking:", err);
+          channel.nack(message, false, false); // Drop message if parsing/logic fails
         }
-      }
-    });
+      },
+      { noAck: false }
+    );
   } catch (error) {
-    console.error("Error starting consumer:", error);
+    console.error("❌ Error starting consumer:", error);
     throw error;
   }
 };
@@ -68,37 +68,32 @@ const processSeatBooking = async (bookingRequest) => {
     bookingId: bookingRequest.BookingId,
     busId: bookingRequest.BusId,
     userId: bookingRequest.UserId,
-    reservedSeats: bookingRequest.BookedSeats,
-    numberOfseats: bookingRequest.NumberOfSeats,
+    reservedSeats: bookingRequest.SeatNumbers,
+    numberOfSeats: bookingRequest.NumberOfSeats,
     status: Status.RESERVED,
     date: bookingRequest.Date,
   });
+
   await newSeat.save();
 };
 
 const disconnect = async () => {
   try {
-    if (channel) {
-      channel.close();
-    }
-    if (connection) {
-      await connection.close();
-    }
-    console.log("Disconnected from RabbitMQ");
+    if (channel) await channel.close();
+    if (connection) await connection.close();
+    console.log("🚪 Disconnected from RabbitMQ.");
   } catch (error) {
-    console.error("Error disconnecting:", error);
+    console.error("❌ Error disconnecting:", error);
   }
 };
 
-async function respondMessages() {
-    try { 
-        await connect();
-        await consume();
-    }
-    catch (error) {
-        console.error(error);
-    }
-}
+const respondMessages = async () => {
+  try {
+    await connect();
+    await consume();
+  } catch (error) {
+    console.error("❌ Error in message response flow:", error);
+  }
+};
 
-
-module.exports = { respondMessages,disconnect };
+module.exports = { respondMessages, disconnect };
