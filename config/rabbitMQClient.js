@@ -1,4 +1,5 @@
 const amqp = require("amqplib");
+const SEAT_REQUEST_QUEUE = "seat-request";
 class RabbitMQ {
   static rabbitMQHost = "rabbitmq";
   static rabbitMQPort = 5672;
