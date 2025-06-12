@@ -1,3 +1,4 @@
+const amqp = require("amqplib");
 class RabbitMQ {
   static rabbitMQHost = "rabbitmq";
   static rabbitMQPort = 5672;

@@ -1,4 +1,4 @@
-const amqp = require("amqplib");
+
 const RabbitMQ = require("../config/rabbitMQClient.js");
 const SEAT_REQUEST_QUEUE = "seat-request";
 const Seat = require("../Models/Seat.js");
