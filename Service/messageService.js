@@ -1,39 +1,13 @@
 const amqp = require("amqplib");
+const RabbitMQ = require("../config/rabbitMQClient.js");
 const SEAT_REQUEST_QUEUE = "seat-request";
 const Seat = require("../Models/Seat.js");
 const Status = require("../Models/enum/Status.js");
-let connection;
-let channel;
-
-const connect = async () => {
-  try {
-    const rabbitMQHost = "rabbitmq";
-    const rabbitMQPort = 5672;
-    const rabbitMQUser = "guest";
-    const rabbitMQPass = "guest";
-    const connectionString = `amqp://${rabbitMQUser}:${rabbitMQPass}@${rabbitMQHost}:${rabbitMQPort}`;
-
-    connection = await amqp.connect(connectionString);
-    channel = await connection.createChannel();
-
-    await channel.assertQueue(SEAT_REQUEST_QUEUE, { durable: true });
-    await channel.prefetch(1); // Ensures only one unacknowledged message at a time per consumer
-
-    connection.on("error", (err) =>
-      console.error("AMQP connection error:", err)
-    );
-    connection.on("close", () => console.log("AMQP connection closed"));
-
-    console.log("Connected to RabbitMQ and queue asserted.");
-  } catch (error) {
-    console.error("Error connecting to RabbitMQ:", error);
-    throw error;
-  }
-};
+const rabbitmq = RabbitMQ.getClient();
 
 const consume = async () => {
   try {
-    await channel.consume(
+    await rabbitmq.channel.consume(
       SEAT_REQUEST_QUEUE,
       async (message) => {
         if (!message) return;
@@ -77,23 +51,13 @@ const processSeatBooking = async (bookingRequest) => {
   await newSeat.save();
 };
 
-const disconnect = async () => {
-  try {
-    if (channel) await channel.close();
-    if (connection) await connection.close();
-    console.log("Disconnected from RabbitMQ.");
-  } catch (error) {
-    console.error(" Error disconnecting:", error);
-  }
-};
-
 const respondMessages = async () => {
   try {
-    await connect();
+    await rabbitmq.connect();
     await consume();
   } catch (error) {
     console.error("Error in message response flow:", error);
   }
 };
 
-module.exports = { respondMessages, disconnect };
+module.exports = { respondMessages };
