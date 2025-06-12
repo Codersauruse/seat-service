@@ -24,9 +24,9 @@ const connect = async () => {
     );
     connection.on("close", () => console.log("AMQP connection closed"));
 
-    console.log("✅ Connected to RabbitMQ and queue asserted.");
+    console.log("Connected to RabbitMQ and queue asserted.");
   } catch (error) {
-    console.error("❌ Error connecting to RabbitMQ:", error);
+    console.error("Error connecting to RabbitMQ:", error);
     throw error;
   }
 };
@@ -51,14 +51,14 @@ const consume = async () => {
           await processSeatBooking(bookingRequest);
           channel.ack(message);
         } catch (err) {
-          console.error("❌ Error processing seat booking:", err);
+          console.error("Error processing seat booking:", err);
           channel.nack(message, false, false); // Drop message if parsing/logic fails
         }
       },
       { noAck: false }
     );
   } catch (error) {
-    console.error("❌ Error starting consumer:", error);
+    console.error("Error starting consumer:", error);
     throw error;
   }
 };
@@ -68,7 +68,7 @@ const processSeatBooking = async (bookingRequest) => {
     bookingId: bookingRequest.BookingId,
     busId: bookingRequest.BusId,
     userId: bookingRequest.UserId,
-    reservedSeats: bookingRequest.SeatNumbers,
+    reservedSeats: bookingRequest.BookedSeats,
     numberOfSeats: bookingRequest.NumberOfSeats,
     status: Status.RESERVED,
     date: bookingRequest.Date,
@@ -81,9 +81,9 @@ const disconnect = async () => {
   try {
     if (channel) await channel.close();
     if (connection) await connection.close();
-    console.log("🚪 Disconnected from RabbitMQ.");
+    console.log("Disconnected from RabbitMQ.");
   } catch (error) {
-    console.error("❌ Error disconnecting:", error);
+    console.error(" Error disconnecting:", error);
   }
 };
 
@@ -92,7 +92,7 @@ const respondMessages = async () => {
     await connect();
     await consume();
   } catch (error) {
-    console.error("❌ Error in message response flow:", error);
+    console.error("Error in message response flow:", error);
   }
 };
 
