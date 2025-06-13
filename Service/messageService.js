@@ -1,12 +1,12 @@
-const RabbitMQ = require("../config/rabbitMQClient.js");
+const rabbitMQ = require("../config/rabbitMQClient.js");
 const SEAT_REQUEST_QUEUE = "seat-request";
 const Seat = require("../Models/Seat.js");
 const Status = require("../Models/enum/Status.js");
-const rabbitmq = RabbitMQ.getClient();
+
 
 const Consume = async () => {
   try {
-    await rabbitmq.channel.consume(
+    await rabbitMQ.channel.consume(
       SEAT_REQUEST_QUEUE,
       async (message) => {
         if (!message) return;
@@ -22,10 +22,10 @@ const Consume = async () => {
           });
 
           await processSeatBooking(bookingRequest);
-          rabbitmq.channel.ack(message);
+          rabbitMQ.channel.ack(message);
         } catch (err) {
           console.error("Error processing seat booking:", err);
-          rabbitmq.channel.nack(message, false, false); // Drop message if parsing/logic fails
+          rabbitMQ.channel.nack(message, false, false); // Drop message if parsing/logic fails
         }
       },
       { noAck: false }
@@ -52,7 +52,7 @@ const processSeatBooking = async (bookingRequest) => {
 
 const respondMessages = async () => {
   try {
-    await rabbitmq.connect();
+    await rabbitMQ.connect();
     await Consume();
   } catch (error) {
     console.error("Error in message response flow:", error);

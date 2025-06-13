@@ -4,9 +4,9 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/mongodb.js");
 const seatRouter = require("./route/seatRoute.js");
 const startEureka = require("./eureka/client.js");
-const RabbitMQ = require("./config/rabbitMQClient.js");
+const rabbitMQ = require("./config/rabbitMQClient.js");
 const { respondMessages } = require("./Service/messageService.js");
-const rabbitmq = RabbitMQ.getClient();
+
 
 dotenv.config();
 const app = express();
@@ -21,7 +21,7 @@ app.use(cors());
 
 process.on("SIGINT", async () => {
   console.log("Shutting down gracefully...");
-  await rabbitmq.disconnect();
+  await rabbitMQ.disconnect();
   process.exit(0);
 });
 //api endpoints

@@ -57,4 +57,7 @@ class RabbitMQ {
     }
   };
 }
-module.exports = RabbitMQ;
+
+const rabbitmq = RabbitMQ.getClient();
+
+module.exports = rabbitmq;
